@@ -20,23 +20,27 @@ public class MainActivity extends AppCompatActivity {
 
         mAdapter = BluetoothAdapter.getDefaultAdapter();
 
-        if (mAdapter.isEnabled())
+        if (! mAdapter.isEnabled())
         {
             Intent enabler = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enabler, 123);
         }
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         registerReceiver(mReceiver, filter);
+        filter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+        registerReceiver(mReceiver, filter);
     }
 
     public void clickScan(View v)
     {
+        Log.v("BLUE1", "Start Scan!!");
         mAdapter.startDiscovery();
     }
     BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
 //找到設備
+            Log.d("BLUE1", "mReceiver:" + action);
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 BluetoothDevice device = intent
                         .getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
